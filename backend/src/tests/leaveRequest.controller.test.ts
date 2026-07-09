@@ -126,7 +126,7 @@ describe('LeaveRequest Controller', () => {
 
       await processLeaveRequest(mockRequest, mockResponse, nextFunction);
 
-      expect(notificationService.createNotification).toHaveBeenCalledWith('emp1', 'Leave Request Approved', expect.any(String));
+      expect(notificationService.createNotification).toHaveBeenCalledWith('emp1', 'Leave Request Approved', expect.any(String), 'LEAVE_APPROVED', 'req1');
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
   });

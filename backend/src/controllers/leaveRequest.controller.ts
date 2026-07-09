@@ -200,7 +200,9 @@ export const applyLeave = async (req: Request, res: Response, next: NextFunction
       notificationService.createNotification(
         req.user.managerId,
         'New Leave Request',
-        `${req.user.firstName} ${req.user.lastName} has submitted a new leave request.`
+        `${req.user.firstName} ${req.user.lastName} submitted a ${leaveType.name} leave request from ${start.toLocaleDateString()} to ${end.toLocaleDateString()}.`,
+        'LEAVE_REQUEST',
+        leaveRequest.id
       );
     }
 
@@ -216,7 +218,10 @@ export const processLeaveRequest = async (req: Request, res: Response, next: Nex
     const id = req.params.id as string;
 
     const result = await prisma.$transaction(async (tx) => {
-      const leaveRequest = await tx.leaveRequest.findUnique({ where: { id } });
+      const leaveRequest = await tx.leaveRequest.findUnique({ 
+        where: { id },
+        include: { leaveType: true }
+      });
       
       if (!leaveRequest) {
         throw new Error('NOT_FOUND');
@@ -274,7 +279,9 @@ export const processLeaveRequest = async (req: Request, res: Response, next: Nex
     notificationService.createNotification(
       result.userId,
       `Leave Request ${status === 'APPROVED' ? 'Approved' : 'Rejected'}`,
-      `Your leave request from ${new Date(result.startDate).toLocaleDateString()} to ${new Date(result.endDate).toLocaleDateString()} has been ${status.toLowerCase()}.`
+      `Your ${result.leaveType?.name || 'leave'} leave request from ${new Date(result.startDate).toLocaleDateString()} to ${new Date(result.endDate).toLocaleDateString()} has been ${status.toLowerCase()}.`,
+      `LEAVE_${status}`,
+      result.id
     );
 
     res.status(200).json({ success: true, message: `Leave request ${status.toLowerCase()}` });

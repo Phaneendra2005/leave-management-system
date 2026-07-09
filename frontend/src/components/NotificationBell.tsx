@@ -5,6 +5,7 @@ import { Bell, Check } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 interface Notification {
   id: string;
@@ -13,12 +14,15 @@ interface Notification {
   message: string;
   isRead: boolean;
   createdAt: string;
+  type?: string;
+  relatedId?: string;
 }
 
 export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { data: notifications = [] } = useQuery<Notification[]>({
     queryKey: ['notifications'],
@@ -98,10 +102,16 @@ export function NotificationBell() {
                 {notifications.map((notification) => (
                   <div 
                     key={notification.id} 
-                    className={`p-4 hover:bg-accent/50 transition-colors ${!notification.isRead ? 'bg-primary/5' : ''}`}
+                    className={`p-4 hover:bg-accent/50 transition-colors cursor-pointer ${!notification.isRead ? 'bg-primary/5' : ''}`}
                     onClick={() => {
                       if (!notification.isRead) {
                         markAsRead.mutate(notification.id);
+                      }
+                      setIsOpen(false);
+                      if (notification.type === 'LEAVE_REQUEST') {
+                        router.push('/dashboard/team');
+                      } else if (notification.type === 'LEAVE_APPROVED' || notification.type === 'LEAVE_REJECTED') {
+                        router.push('/dashboard/history');
                       }
                     }}
                   >

@@ -7,6 +7,8 @@ export interface Notification {
   message: string;
   isRead: boolean;
   createdAt: Date;
+  type?: string;
+  relatedId?: string;
 }
 
 // In-memory store for notifications (Temporary solution as per requirements)
@@ -14,7 +16,17 @@ export interface Notification {
 const notificationsMap = new Map<string, Notification[]>();
 
 export const notificationService = {
-  createNotification: (userId: string, title: string, message: string): Notification => {
+  createNotification: (userId: string, title: string, message: string, type?: string, relatedId?: string): Notification | null => {
+    const userNotifications = notificationsMap.get(userId) || [];
+
+    if (type && relatedId) {
+      // Prevent duplicate unread notifications for the same event
+      const isDuplicate = userNotifications.some(
+        n => !n.isRead && n.type === type && n.relatedId === relatedId
+      );
+      if (isDuplicate) return null;
+    }
+
     const notification: Notification = {
       id: crypto.randomUUID(),
       userId,
@@ -22,9 +34,10 @@ export const notificationService = {
       message,
       isRead: false,
       createdAt: new Date(),
+      type,
+      relatedId
     };
 
-    const userNotifications = notificationsMap.get(userId) || [];
     userNotifications.push(notification);
     // Sort descending by date
     userNotifications.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
