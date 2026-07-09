@@ -72,7 +72,7 @@ export default function ApplyLeavePage() {
   if (!start || !end || new Date(start) > new Date(end)) {
     requestedDays = '--';
   } else {
-    let curDate = new Date(start);
+    const curDate = new Date(start);
     const endDate = new Date(end);
     while (curDate <= endDate) {
       const dayOfWeek = curDate.getDay();
@@ -148,8 +148,8 @@ export default function ApplyLeavePage() {
       reset();
       setFile(null);
       router.push('/dashboard/history');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to submit leave request', { id: 'apply-error' });
+    } catch (e: any) {
+      toast.error(e.response?.data?.message || 'Failed to submit leave request', { id: 'apply-error' });
     } finally {
       setIsProcessing(false);
     }

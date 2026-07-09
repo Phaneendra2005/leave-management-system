@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { PrismaClient, LeaveStatus } from '@prisma/client';
 import { z } from 'zod';
 import { logAudit } from '../utils/auditLogger';
+import { notificationService } from '../utils/notification.service';
 
 const prisma = new PrismaClient();
 
@@ -195,6 +196,14 @@ export const applyLeave = async (req: Request, res: Response, next: NextFunction
       endDate: end
     });
 
+    if (req.user.managerId) {
+      notificationService.createNotification(
+        req.user.managerId,
+        'New Leave Request',
+        `${req.user.firstName} ${req.user.lastName} has submitted a new leave request.`
+      );
+    }
+
     res.status(201).json({ success: true, data: leaveRequest });
   } catch (error) {
     next(error);
@@ -206,7 +215,7 @@ export const processLeaveRequest = async (req: Request, res: Response, next: Nex
     const { status, managerComment } = processLeaveSchema.parse(req.body);
     const id = req.params.id as string;
 
-    await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       const leaveRequest = await tx.leaveRequest.findUnique({ where: { id } });
       
       if (!leaveRequest) {
@@ -258,7 +267,15 @@ export const processLeaveRequest = async (req: Request, res: Response, next: Nex
           details: { leaveId: id, employeeId: leaveRequest.userId, status }
         }
       });
+      
+      return leaveRequest;
     });
+
+    notificationService.createNotification(
+      result.userId,
+      `Leave Request ${status === 'APPROVED' ? 'Approved' : 'Rejected'}`,
+      `Your leave request from ${new Date(result.startDate).toLocaleDateString()} to ${new Date(result.endDate).toLocaleDateString()} has been ${status.toLowerCase()}.`
+    );
 
     res.status(200).json({ success: true, message: `Leave request ${status.toLowerCase()}` });
   } catch (error: any) {
@@ -336,6 +353,42 @@ export const getAttachment = async (req: Request, res: Response, next: NextFunct
     res.setHeader('Content-Disposition', 'inline');
     res.setHeader('Cache-Control', 'private, max-age=86400');
     res.send(buffer);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const cancelLeave = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+
+    const leaveRequest = await prisma.leaveRequest.findUnique({
+      where: { id },
+    });
+
+    if (!leaveRequest) {
+      res.status(404).json({ success: false, message: 'Leave request not found' });
+      return;
+    }
+
+    if (leaveRequest.userId !== req.user.id) {
+      res.status(403).json({ success: false, message: 'Not authorized to cancel this request' });
+      return;
+    }
+
+    if (leaveRequest.status !== 'PENDING') {
+      res.status(400).json({ success: false, message: 'Only pending requests can be cancelled' });
+      return;
+    }
+
+    await prisma.leaveRequest.update({
+      where: { id },
+      data: { status: 'CANCELLED' },
+    });
+
+    logAudit('LEAVE_CANCELLED', req.user.id, { leaveId: id });
+
+    res.status(200).json({ success: true, message: 'Leave request cancelled successfully' });
   } catch (error) {
     next(error);
   }

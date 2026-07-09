@@ -34,7 +34,6 @@ api.interceptors.response.use(
     }
 
     const status = error.response.status;
-    const message = error.response.data?.message;
 
     if (status === 401) {
       if (typeof window !== 'undefined') {

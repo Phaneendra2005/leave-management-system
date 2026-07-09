@@ -41,6 +41,7 @@ import leaveTypeRoutes from './routes/leaveType.routes';
 import leaveRequestRoutes from './routes/leaveRequest.routes';
 import reportRoutes from './routes/report.routes';
 import departmentRoutes from './routes/department.routes';
+import notificationRoutes from './routes/notification.routes';
 
 // Setup routes here
 app.use('/api/v1/auth', authRoutes);
@@ -49,6 +50,7 @@ app.use('/api/v1/leave-types', leaveTypeRoutes);
 app.use('/api/v1/leave-requests', leaveRequestRoutes);
 app.use('/api/v1/reports', reportRoutes);
 app.use('/api/v1/departments', departmentRoutes);
+app.use('/api/v1/notifications', notificationRoutes);
 
 // Error handling middleware
 app.use(errorHandler);

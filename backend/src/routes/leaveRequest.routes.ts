@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getLeaveRequests, applyLeave, processLeaveRequest, getLeaveBalances, getAttachment } from '../controllers/leaveRequest.controller';
+import { getLeaveRequests, applyLeave, processLeaveRequest, getLeaveBalances, getAttachment, cancelLeave } from '../controllers/leaveRequest.controller';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -16,6 +16,9 @@ router.route('/')
 
 // Process leave request (Managers and Admins)
 router.patch('/:id/process', authorize('MANAGER', 'ADMIN'), processLeaveRequest);
+
+// Cancel leave request
+router.post('/:id/cancel', cancelLeave);
 
 // View attachment
 router.get('/:id/attachment', getAttachment);

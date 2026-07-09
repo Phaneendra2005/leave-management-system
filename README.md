@@ -30,6 +30,8 @@ https://leave-management-system-xdn0.onrender.com
 - Login
 - Dashboard
 - Apply Leave
+- Cancel Pending Leave Requests
+- View Notifications
 - Leave History
 - Leave Balance
 - CSV Export
@@ -43,6 +45,7 @@ https://leave-management-system-xdn0.onrender.com
 - Approve Leave
 - Reject Leave
 - Add Comments
+- Receive Notifications on Team Requests
 - Export CSV
 
 ---
@@ -163,6 +166,9 @@ npx prisma generate
 
 npx prisma db push
 
+# Run backend unit tests
+npm test
+
 npm run dev
 ```
 
@@ -174,6 +180,9 @@ npm run dev
 cd frontend
 
 npm install
+
+# Run frontend unit tests
+npm test
 
 npm run dev
 ```
@@ -319,6 +328,7 @@ employee123
 Authentication
 
 - POST /api/auth/login
+- POST /api/auth/logout
 - GET /api/auth/me
 
 Users
@@ -332,9 +342,17 @@ Leave Types
 Leave Requests
 
 - Apply Leave
+- Cancel Leave Request
 - Approve Leave
 - Reject Leave
 - Leave History
+
+Notifications
+
+- GET /api/notifications
+- PUT /api/notifications/:id/read
+- PUT /api/notifications/read-all
+*Note: The current notification system is implemented as an in-memory service for assessment purposes to avoid modifying the production database schema. Notifications will be lost if the server restarts. In a production environment, this should be migrated to a persistent database model.*
 
 Reports
 

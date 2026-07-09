@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useMemo, useDeferredValue, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatusBadge } from '@/components/StatusBadge';
 import { ExpandableComment } from '@/components/ExpandableComment';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { Search, Download, FilterX, FileText } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function HistoryPage() {
   const { data: requests, isLoading } = useQuery({
@@ -23,6 +25,11 @@ export default function HistoryPage() {
   const [leaveTypeFilter, setLeaveTypeFilter] = useState('ALL');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  
+  const queryClient = useQueryClient();
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [requestToCancel, setRequestToCancel] = useState<string | null>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   // Extract unique leave types for filter dropdown
   const uniqueLeaveTypes = useMemo(() => {
@@ -90,6 +97,27 @@ export default function HistoryPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleCancelClick = (id: string) => {
+    setRequestToCancel(id);
+    setCancelModalOpen(true);
+  };
+
+  const handleConfirmCancel = async () => {
+    if (!requestToCancel) return;
+    setIsCancelling(true);
+    try {
+      await api.post(`/leave-requests/${requestToCancel}/cancel`);
+      toast.success('Leave request cancelled successfully');
+      queryClient.invalidateQueries({ queryKey: ['employee-requests'] });
+      setCancelModalOpen(false);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to cancel leave request');
+    } finally {
+      setIsCancelling(false);
+      setRequestToCancel(null);
+    }
   };
 
   if (isLoading) {
@@ -199,6 +227,7 @@ export default function HistoryPage() {
                         <th className="px-4 py-3 font-medium">Reason</th>
                         <th className="px-4 py-3 font-medium">Status</th>
                         <th className="px-4 py-3 font-medium">Manager Comment</th>
+                        <th className="px-4 py-3 font-medium text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
@@ -216,6 +245,16 @@ export default function HistoryPage() {
                           </td>
                           <td className="px-4 py-4 align-middle max-w-[300px]">
                             <ExpandableComment comment={req.managerComment} />
+                          </td>
+                          <td className="px-4 py-4 align-middle text-right">
+                            {req.status === 'PENDING' && (
+                              <button
+                                onClick={() => handleCancelClick(req.id)}
+                                className="text-sm font-medium text-destructive hover:underline"
+                              >
+                                Cancel
+                              </button>
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -267,6 +306,19 @@ export default function HistoryPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={cancelModalOpen}
+        title="Cancel Leave Request"
+        message="Are you sure you want to cancel this leave request? This action cannot be undone."
+        onConfirm={handleConfirmCancel}
+        onCancel={() => {
+          setCancelModalOpen(false);
+          setRequestToCancel(null);
+        }}
+        confirmText="Yes, Cancel"
+        isLoading={isCancelling}
+      />
     </div>
   );
 }

@@ -308,8 +308,8 @@ export default function ReportsPage() {
                       {summaryByEmployee.length === 0 ? (
                         <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">No data available</td></tr>
                       ) : (
-                        summaryByEmployee.map((item: any, i: number) => (
-                          <tr key={i} className="hover:bg-muted/30 transition-colors">
+                        summaryByEmployee.map((item: any, _idx: number) => (
+                          <tr key={_idx} className="hover:bg-muted/30 transition-colors">
                             <td className="px-6 py-3 font-medium">{item.name}</td>
                             <td className="px-6 py-3 text-right font-bold">{item.total}</td>
                             <td className="px-6 py-3 text-right text-green-600">{item.APPROVED}</td>

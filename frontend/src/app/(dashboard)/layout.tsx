@@ -4,10 +4,11 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { useAuth } from '@/lib/auth';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogOut, User as UserIcon, Calendar, Home, Users, FileText, Settings, Menu, X, BarChart } from 'lucide-react';
+import { LogOut, Calendar, Home, Users, FileText, Settings, Menu, X, BarChart } from 'lucide-react';
 import { useState } from 'react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { NotificationBell } from '@/components/NotificationBell';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -129,6 +130,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Menu className="h-6 w-6" />
             </button>
             <div className="flex items-center gap-4 ml-auto">
+              <NotificationBell />
               <span className="text-sm text-muted-foreground hidden sm:inline-block">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </span>
