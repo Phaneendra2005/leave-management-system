@@ -9,49 +9,79 @@ jest.mock('../utils/jwt');
 jest.mock('../utils/auditLogger');
 
 describe('Auth Controller', () => {
-  let mockRequest: Partial<Request>;
-  let mockResponse: Partial<Response>;
+  let mockRequest: Request;
+  let mockResponse: Response;
   let nextFunction: NextFunction = jest.fn();
 
   beforeEach(() => {
-    mockRequest = {};
+    mockRequest = {
+      body: {},
+      params: {},
+      query: {},
+      user: undefined,
+    } as unknown as Request;
     mockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
-    };
+    } as unknown as Response;
     jest.clearAllMocks();
   });
 
   describe('login', () => {
     it('should return 401 if user not found', async () => {
-      mockRequest = { body: { email: 'test@test.com', password: 'password123' } };
-      mockPrismaClient.user.findUnique.mockResolvedValue(null);
+      mockRequest.body = { email: 'test@test.com', password: 'password123' };
+      (mockPrismaClient.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-      await login(mockRequest as Request, mockResponse as Response, nextFunction);
+      await login(mockRequest, mockResponse, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.json).toHaveBeenCalledWith({ success: false, message: 'Invalid credentials or inactive account' });
     });
 
     it('should return 401 if password does not match', async () => {
-      mockRequest = { body: { email: 'test@test.com', password: 'password123' } };
-      mockPrismaClient.user.findUnique.mockResolvedValue({ id: '1', isActive: true, passwordHash: 'hash' });
+      mockRequest.body = { email: 'test@test.com', password: 'password123' };
+      const userMock = {
+        id: '1',
+        email: 'test@test.com',
+        passwordHash: 'hash',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: 'EMPLOYEE',
+        isActive: true,
+        departmentId: null,
+        managerId: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      (mockPrismaClient.user.findUnique as jest.Mock).mockResolvedValue(userMock);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-      await login(mockRequest as Request, mockResponse as Response, nextFunction);
+      await login(mockRequest, mockResponse, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.json).toHaveBeenCalledWith({ success: false, message: 'Invalid credentials' });
     });
 
     it('should return token and user on successful login', async () => {
-      mockRequest = { body: { email: 'test@test.com', password: 'password123' } };
-      const user = { id: '1', isActive: true, passwordHash: 'hash', role: 'EMPLOYEE', email: 'test@test.com' };
-      mockPrismaClient.user.findUnique.mockResolvedValue(user);
+      mockRequest.body = { email: 'test@test.com', password: 'password123' };
+      const user = {
+        id: '1',
+        email: 'test@test.com',
+        passwordHash: 'hash',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: 'EMPLOYEE',
+        isActive: true,
+        departmentId: null,
+        managerId: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      (mockPrismaClient.user.findUnique as jest.Mock).mockResolvedValue(user);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       (jwt.generateToken as jest.Mock).mockReturnValue('fake_token');
 
-      await login(mockRequest as Request, mockResponse as Response, nextFunction);
+      await login(mockRequest, mockResponse, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(expect.objectContaining({
@@ -64,9 +94,9 @@ describe('Auth Controller', () => {
 
   describe('logout', () => {
     it('should successfully logout', async () => {
-      mockRequest = { user: { id: '1', role: 'EMPLOYEE' } };
+      mockRequest.user = { id: '1', role: 'EMPLOYEE' };
       
-      await logout(mockRequest as Request, mockResponse as Response, nextFunction);
+      await logout(mockRequest, mockResponse, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({ success: true, message: 'Logged out successfully' });
@@ -75,13 +105,26 @@ describe('Auth Controller', () => {
 
   describe('getMe', () => {
     it('should return current user', async () => {
-      mockRequest = { user: { id: '1', role: 'EMPLOYEE' } };
-      mockPrismaClient.user.findUnique.mockResolvedValue({ id: '1', email: 'test@test.com' });
+      mockRequest.user = { id: '1', role: 'EMPLOYEE' };
+      const userMock = {
+        id: '1',
+        email: 'test@test.com',
+        passwordHash: 'hash',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: 'EMPLOYEE',
+        isActive: true,
+        departmentId: null,
+        managerId: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      (mockPrismaClient.user.findUnique as jest.Mock).mockResolvedValue(userMock);
 
-      await getMe(mockRequest as Request, mockResponse as Response, nextFunction);
+      await getMe(mockRequest, mockResponse, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.json).toHaveBeenCalledWith({ success: true, user: { id: '1', email: 'test@test.com' } });
+      expect(mockResponse.json).toHaveBeenCalledWith({ success: true, user: userMock });
     });
   });
 });

@@ -26,12 +26,20 @@ describe('Notification Controller', () => {
 
   describe('getNotifications', () => {
     it('should return user notifications', async () => {
-      (notificationService.getUserNotifications as jest.Mock).mockReturnValue([{ id: 'notif1', title: 'Test' }]);
+      const mockNotification = {
+        id: 'notif1',
+        userId: 'user1',
+        title: 'Test',
+        message: 'Test msg',
+        isRead: false,
+        createdAt: new Date()
+      };
+      (notificationService.getUserNotifications as jest.Mock).mockReturnValue([mockNotification]);
 
       await getNotifications(mockRequest as Request, mockResponse as Response, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: [{ id: 'notif1', title: 'Test' }] });
+      expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: [mockNotification] });
     });
   });
 
@@ -48,12 +56,20 @@ describe('Notification Controller', () => {
 
     it('should mark notification as read', async () => {
       mockRequest.params = { id: 'notif1' };
-      (notificationService.markAsRead as jest.Mock).mockReturnValue({ id: 'notif1', isRead: true });
+      const mockNotification = {
+        id: 'notif1',
+        userId: 'user1',
+        title: 'Test',
+        message: 'Test msg',
+        isRead: true,
+        createdAt: new Date()
+      };
+      (notificationService.markAsRead as jest.Mock).mockReturnValue(mockNotification);
 
       await markAsRead(mockRequest as Request, mockResponse as Response, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: { id: 'notif1', isRead: true } });
+      expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: mockNotification });
     });
   });
 

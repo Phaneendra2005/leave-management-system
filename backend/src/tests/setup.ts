@@ -1,7 +1,8 @@
 // Setup file for Jest
 // We'll mock the Prisma client globally
+import { PrismaClient } from '@prisma/client';
 
-const mockPrismaClient: any = {
+const mockPrismaClient = {
   user: {
     findUnique: jest.fn(),
     findMany: jest.fn(),
@@ -42,10 +43,10 @@ const mockPrismaClient: any = {
     update: jest.fn(),
     delete: jest.fn(),
   },
-  $transaction: jest.fn(async (cb: any) => {
+  $transaction: jest.fn(async (cb: (tx: any) => Promise<any>) => {
     return await cb(mockPrismaClient);
   }),
-};
+} as unknown as PrismaClient;
 
 jest.mock('@prisma/client', () => {
   return {
