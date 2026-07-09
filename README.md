@@ -6,11 +6,7 @@ A modern, full-stack Leave Management System built with React, Node.js, Express,
 
 ## Live Demo
 
-### Frontend
 https://leave-management-system-rho-three.vercel.app
-
-### Backend API
-https://leave-management-system-xdn0.onrender.com
 
 ---
 
