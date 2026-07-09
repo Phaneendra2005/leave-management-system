@@ -1,400 +1,430 @@
-# LeaveSync - Leave Management System
+# Employee Leave Management System
 
-A modern, full-stack Leave Management System built with React, Node.js, Express, Prisma, PostgreSQL (Neon), and deployed on Vercel & Render.
+A full-stack Employee Leave Management System built using **Next.js, React, Node.js, Express, PostgreSQL, and Prisma ORM**. The application provides secure role-based access for Employees, Managers, and Administrators to manage leave requests, approvals, leave balances, reports, and user management.
 
 ---
 
-## Live Demo
+# Live Demo
 
 https://leave-management-system-rho-three.vercel.app
 
 ---
 
-## Features
+# Tech Stack
 
-### Authentication
-
-- JWT Authentication
-- Role Based Access Control
-- Protected Routes
-- Secure Password Hashing (bcrypt)
-
----
-
-### Employee
-
-- Login
-- Dashboard
-- Apply Leave
-- Cancel Pending Leave Requests
-- View Notifications
-- Leave History
-- Leave Balance
-- CSV Export
-
----
-
-### Manager
-
-- Dashboard
-- Review Team Requests
-- Approve Leave
-- Reject Leave
-- Add Comments
-- Receive Notifications on Team Requests
-- Export CSV
-
----
-
-### Admin
-
-- Dashboard
-- User Management
-- Leave Type Management
-- Global Leave Requests
-- Reports & Analytics
-- Leave Calendar
-- CSV Export
-
----
-
-## Tech Stack
-
-### Frontend
-
+## Frontend
+- Next.js (App Router)
 - React
 - TypeScript
 - Tailwind CSS
-- React Router
+- React Query
 - Axios
-- React Hook Form
 
-### Backend
-
+## Backend
 - Node.js
 - Express.js
 - Prisma ORM
 - PostgreSQL
-- JWT
+- JWT Authentication
 - bcrypt
-- Multer
 
-### Database
-
-- PostgreSQL
-- Neon
-
-### Deployment
-
-- Vercel
-- Render
+## Testing
+- Jest
+- React Testing Library
 
 ---
 
-## Architecture
+# Features Implemented
 
-Frontend (React)
+## Authentication
 
-↓
-
-Express REST API
-
-↓
-
-Prisma ORM
-
-↓
-
-PostgreSQL (Neon)
+- Secure Login
+- Logout
+- JWT Authentication
+- Password Hashing
+- Protected Routes
+- Role-Based Authorization
 
 ---
 
-# Project Structure
+## Employee
+
+- Apply Leave
+- View Leave History
+- View Leave Balance
+- Cancel Pending Leave Requests
+- Dashboard Overview
+- Notifications
+
+---
+
+## Manager
+
+- View Team Leave Requests
+- Approve Leave Requests
+- Reject Leave Requests
+- Team Dashboard
+- Leave Notifications
+
+---
+
+## Admin
+
+- User Management
+- Leave Type Management
+- Leave Policy Management
+- Leave Summary Report
+- Leave Balance Report
+- Dashboard Analytics
+
+---
+
+## Reports
+
+- Leave Summary
+- Leave Balance
+- Department-wise Statistics
+- Employee-wise Statistics
+
+---
+
+## Additional Features
+
+- Responsive Design
+- Loading States
+- Form Validation
+- Toast Notifications
+- Error Handling
+- Notification Center
+- RESTful APIs
+- Role-Based Navigation
+
+---
+
+# Folder Structure
 
 ```
-leave-management-system
-
-frontend/
-
-backend/
-
-prisma/
-
-README.md
+Intern-Hiring-React
+│
+├── client
+│   ├── app
+│   ├── components
+│   ├── hooks
+│   ├── lib
+│   ├── services
+│   ├── styles
+│   └── tests
+│
+├── server
+│   ├── controllers
+│   ├── middleware
+│   ├── prisma
+│   ├── routes
+│   ├── services
+│   ├── utils
+│   └── tests
+│
+└── README.md
 ```
 
 ---
 
 # Installation
 
-## Clone
+## Clone Repository
 
 ```bash
 git clone https://github.com/Phaneendra2005/leave-management-system.git
 ```
 
 ```
-cd leave-management-system
+cd Intern-Hiring-React
 ```
 
 ---
 
-## Backend
+# Backend Setup
 
 ```
-cd backend
+cd server
+```
 
+Install dependencies
+
+```
 npm install
-
-cp .env.example .env
 ```
 
-```
-DATABASE_URL=
+Generate Prisma Client
 
-JWT_SECRET=
+```
+npx prisma generate
+```
+
+Run migrations
+
+```
+npx prisma migrate deploy
+```
+
+Start server
+
+```
+npm run dev
+```
+
+---
+
+# Frontend Setup
+
+```
+cd client
+```
+
+Install dependencies
+
+```
+npm install
+```
+
+Start development server
+
+```
+npm run dev
+```
+
+---
+
+# Environment Variables
+
+## Backend (.env)
+
+```
+DATABASE_URL=<POSTGRES_DATABASE_URL>
+
+JWT_SECRET=<YOUR_SECRET_KEY>
 
 PORT=5000
 ```
 
+---
+
+## Frontend (.env.local)
+
 ```
-npx prisma generate
+NEXT_PUBLIC_API_URL=<YOUR_RENDER_URL>
+```
 
-npx prisma db push
+---
 
-# Run backend unit tests
+# API Endpoints
+
+## Authentication
+
+| Method | Endpoint |
+|---------|----------|
+| POST | /api/auth/login |
+| POST | /api/auth/logout |
+| GET | /api/users/me |
+
+---
+
+## Users
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /api/users |
+| POST | /api/users |
+| PUT | /api/users/:id |
+| DELETE | /api/users/:id |
+
+---
+
+## Leave Types
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /api/leave-types |
+| POST | /api/leave-types |
+| PUT | /api/leave-types/:id |
+| DELETE | /api/leave-types/:id |
+
+---
+
+## Leave Requests
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /api/leave-requests |
+| POST | /api/leave-requests |
+| PUT | /api/leave-requests/:id |
+| POST | /api/leave-requests/:id/cancel |
+
+---
+
+## Reports
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /api/reports/leave-summary |
+| GET | /api/reports/leave-balance |
+
+---
+
+## Notifications
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /api/notifications |
+| PUT | /api/notifications/:id/read |
+| PUT | /api/notifications/read-all |
+
+---
+
+# Testing
+
+## Backend
+
+```
+cd server
+
 npm test
-
-npm run dev
 ```
+
+Tests include
+
+- Authentication
+- Authorization
+- Leave Requests
+- Notifications
+- Validation
+- API Controllers
 
 ---
 
 ## Frontend
 
 ```
-cd frontend
+cd client
 
-npm install
-
-# Run frontend unit tests
 npm test
+```
 
-npm run dev
+Tests include
+
+- Login
+- Dashboard
+- Leave Application
+- Leave History
+- Protected Routes
+- Notification Component
+
+---
+
+# Deployment
+
+## Frontend
+
+Hosted on **Vercel**
+
+```
+https://leave-management-system-rho-three.vercel.app
 ```
 
 ---
 
-# Demo Accounts
+## Backend
+
+Hosted on **Render**
+
+```
+https://leave-management-system-xdn0.onrender.com
+```
+
+---
+
+# Demo Credentials
 
 ## Admin
 
-Email
-
 ```
-admin@company.com
-```
+Email:
+admin@example.com
 
-Password
-
-```
-admin123
+Password:
+Admin@123
 ```
 
 ---
 
 ## Manager
 
-Email
-
 ```
-manager@company.com
-```
+Email:
+manager@example.com
 
-Password
-
-```
-manager123
+Password:
+Manager@123
 ```
 
 ---
 
 ## Employee
 
-Email
+```
+Email:
+employee@example.com
 
-```
-employee@company.com
+Password:
+Employee@123
 ```
 
-Password
-
-```
-employee123
-```
+> Replace the above with the actual seeded credentials from your database.
 
 ---
 
 # Screenshots
 
-## Login
+Recommended screenshots:
 
-![](screenshots/login.png)
-
----
-
-## Employee Dashboard
-
-![](screenshots/employee-dashboard.png)
-
----
-
-## Apply Leave
-
-![](screenshots/employee-apply-leave.png)
-
----
-
-## Leave History
-
-![](screenshots/employee-history.png)
-
----
-
-## Manager Dashboard
-
-![](screenshots/manager-dashboard.png)
-
----
-
-## Team Leave Requests
-
-![](screenshots/manager-team-requests.png)
-
----
-
-## Admin Dashboard
-
-![](screenshots/admin-dashboard.png)
-
----
-
-## User Management
-
-![](screenshots/user-management.png)
-
----
-
-## Leave Types
-
-![](screenshots/leave-types.png)
-
----
-
-## All Leave Requests
-
-![](screenshots/all-requests.png)
-
----
-
-## Request Details
-
-![](screenshots/request-details.png)
-
----
-
-## Reports
-
-### Leave Summary
-
-![](screenshots/reports-summary.png)
-
-### Leave Balances
-
-![](screenshots/reports-balances.png)
-
-### Leave Calendar
-
-![](screenshots/reports-calendar.png)
-
----
-
-# API Features
-
-Authentication
-
-- POST /api/auth/login
-- POST /api/auth/logout
-- GET /api/auth/me
-
-Users
-
-- CRUD Users
-
-Leave Types
-
-- CRUD Leave Types
-
-Leave Requests
-
+- Login Page
+- Employee Dashboard
+- Manager Dashboard
+- Admin Dashboard
 - Apply Leave
-- Cancel Leave Request
-- Approve Leave
-- Reject Leave
-- Leave History
-
-Notifications
-
-- GET /api/notifications
-- PUT /api/notifications/:id/read
-- PUT /api/notifications/read-all
-*Note: The current notification system is implemented as an in-memory service for assessment purposes to avoid modifying the production database schema. Notifications will be lost if the server restarts. In a production environment, this should be migrated to a persistent database model.*
-
-Reports
-
-- Summary
-- Calendar
-- Leave Balance
-- CSV Export
+- Leave Requests
+- Reports
+- Notification Panel
 
 ---
 
-# Security
+# Project Highlights
 
 - JWT Authentication
-- Password Hashing (bcrypt)
-- Role Based Authorization
-- Input Validation (Zod)
-- Protected API Routes
+- Secure Password Hashing
 - Prisma ORM
-
----
-
-# Deployment
-
-Frontend
-
-Vercel
-
-Backend
-
-Render
-
-Database
-
-Neon PostgreSQL
+- PostgreSQL Database
+- RESTful API Design
+- Responsive UI
+- Role-Based Access Control
+- Clean Architecture
+- Production Deployment
+- Unit Testing
 
 ---
 
 # Future Improvements
 
 - Email Notifications
-- Multi-Level Approval
-- Public Holidays
-- Attendance Integration
-- Mobile Responsive Improvements
-- Docker Support
-- CI/CD Pipeline
+- Real-Time Notifications (WebSockets)
+- Calendar Drag-and-Drop
+- Excel Export
+- PDF Reports
+- Integration Tests
+- End-to-End Testing
+- Multi-language Support
+- Audit Dashboard
+- Mobile Application
 
 ---
 
@@ -402,16 +432,16 @@ Neon PostgreSQL
 
 **Phaneendra Kanduri**
 
-LinkedIn
+B.Tech Computer Science & Engineering (Cyber Security)
 
-https://www.linkedin.com/in/phaneendra-kanduri/
-
-GitHub
-
+GitHub:
 https://github.com/Phaneendra2005
+
+LinkedIn:
+https://www.linkedin.com/in/phaneendra-kanduri/
 
 ---
 
-## License
+# License
 
-MIT License
+This project was developed as part of the **ReadNRevise Full Stack Intern Technical Assessment** and is intended solely for evaluation purposes.
