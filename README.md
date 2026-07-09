@@ -1,88 +1,403 @@
-# Employee Leave Management System
+# LeaveSync - Leave Management System
 
-A production-ready Employee Leave Management System built with Next.js, Express, Prisma, and PostgreSQL.
+A modern, full-stack Leave Management System built with React, Node.js, Express, Prisma, PostgreSQL (Neon), and deployed on Vercel & Render.
+
+---
+
+## Live Demo
+
+### Frontend
+https://leave-management-system-rho-three.vercel.app
+
+### Backend API
+https://leave-management-system-xdn0.onrender.com
+
+---
 
 ## Features
 
-- **Authentication & Authorization**: Secure JWT-based auth with Role-Based Access Control (Admin, Manager, Employee).
-- **Employee Dashboard**: View leave balances, apply for leaves, view history.
-- **Manager Dashboard**: Review team requests, approve/reject workflow.
-- **Admin Dashboard**: User management, Leave policies management, global reports, and analytics.
-- **Premium UI**: Glassmorphism, Tailwind CSS, animations with Framer Motion, and charts using Recharts.
+### Authentication
+
+- JWT Authentication
+- Role Based Access Control
+- Protected Routes
+- Secure Password Hashing (bcrypt)
+
+---
+
+### Employee
+
+- Login
+- Dashboard
+- Apply Leave
+- Leave History
+- Leave Balance
+- CSV Export
+
+---
+
+### Manager
+
+- Dashboard
+- Review Team Requests
+- Approve Leave
+- Reject Leave
+- Add Comments
+- Export CSV
+
+---
+
+### Admin
+
+- Dashboard
+- User Management
+- Leave Type Management
+- Global Leave Requests
+- Reports & Analytics
+- Leave Calendar
+- CSV Export
+
+---
+
+## Tech Stack
+
+### Frontend
+
+- React
+- TypeScript
+- Tailwind CSS
+- React Router
+- Axios
+- React Hook Form
+
+### Backend
+
+- Node.js
+- Express.js
+- Prisma ORM
+- PostgreSQL
+- JWT
+- bcrypt
+- Multer
+
+### Database
+
+- PostgreSQL
+- Neon
+
+### Deployment
+
+- Vercel
+- Render
+
+---
 
 ## Architecture
 
-- **Frontend**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, TanStack Query, React Hook Form, Zod.
-- **Backend**: Node.js, Express, TypeScript, Prisma ORM, PostgreSQL.
+Frontend (React)
 
-## Folder Structure
+↓
+
+Express REST API
+
+↓
+
+Prisma ORM
+
+↓
+
+PostgreSQL (Neon)
+
+---
+
+# Project Structure
 
 ```
-leave-management-system/
-├── backend/            # Express REST API
-│   ├── prisma/         # Database schema & seed script
-│   ├── src/
-│   │   ├── controllers/# Route handlers
-│   │   ├── middlewares/# Auth, Error, Rate Limiter
-│   │   ├── routes/     # Express routes
-│   │   ├── utils/      # Logger, JWT config
-│   │   └── app.ts      # App configuration
-├── frontend/           # Next.js Application
-│   ├── src/
-│   │   ├── app/        # App router pages
-│   │   ├── components/ # Reusable UI components
-│   │   └── lib/        # API client, Auth Context
-└── README.md
+leave-management-system
+
+frontend/
+
+backend/
+
+prisma/
+
+README.md
 ```
 
-## Installation & Setup
+---
 
-1. **Install dependencies**:
-   ```bash
-   cd backend && npm install
-   cd ../frontend && npm install
-   ```
+# Installation
 
-2. **Database Setup**:
-   - Provide a valid PostgreSQL URL in `backend/.env`.
-   - Run migrations and seed the database:
-     ```bash
-     cd backend
-     npx prisma db push
-     npm run prisma:seed
-     ```
+## Clone
 
-3. **Environment Variables**:
-   - `backend/.env`: `DATABASE_URL`, `JWT_SECRET`, `PORT`
-   - `frontend/.env.local`: `NEXT_PUBLIC_API_URL`
-
-4. **Run Development Servers**:
-   ```bash
-   # Terminal 1 (Backend)
-   cd backend && npm run dev
-
-   # Terminal 2 (Frontend)
-   cd frontend && npm run dev
-   ```
-
-## Testing
-
-Run tests using Jest:
 ```bash
-# Backend tests
-cd backend && npm test
-
-# Frontend tests
-cd frontend && npm test
+git clone https://github.com/Phaneendra2005/leave-management-system.git
 ```
 
-## Deployment
+```
+cd leave-management-system
+```
 
-- **Backend**: Can be deployed to Render or Railway. Set environment variables.
-- **Frontend**: Deploy directly to Vercel. Connect GitHub repo, set `NEXT_PUBLIC_API_URL`.
-- **Database**: Use Neon or Railway Postgres.
+---
 
-## Future Improvements
-- Email Notifications integration.
-- Advanced CSV/Excel Exports for reporting.
-- Audit Log dashboard UI.
+## Backend
+
+```
+cd backend
+
+npm install
+
+cp .env.example .env
+```
+
+```
+DATABASE_URL=
+
+JWT_SECRET=
+
+PORT=5000
+```
+
+```
+npx prisma generate
+
+npx prisma db push
+
+npm run dev
+```
+
+---
+
+## Frontend
+
+```
+cd frontend
+
+npm install
+
+npm run dev
+```
+
+---
+
+# Demo Accounts
+
+## Admin
+
+Email
+
+```
+admin@company.com
+```
+
+Password
+
+```
+admin123
+```
+
+---
+
+## Manager
+
+Email
+
+```
+manager@company.com
+```
+
+Password
+
+```
+manager123
+```
+
+---
+
+## Employee
+
+Email
+
+```
+employee@company.com
+```
+
+Password
+
+```
+employee123
+```
+
+---
+
+# Screenshots
+
+## Login
+
+![](screenshots/login.png)
+
+---
+
+## Employee Dashboard
+
+![](screenshots/employee-dashboard.png)
+
+---
+
+## Apply Leave
+
+![](screenshots/employee-apply-leave.png)
+
+---
+
+## Leave History
+
+![](screenshots/employee-history.png)
+
+---
+
+## Manager Dashboard
+
+![](screenshots/manager-dashboard.png)
+
+---
+
+## Team Leave Requests
+
+![](screenshots/manager-team-requests.png)
+
+---
+
+## Admin Dashboard
+
+![](screenshots/admin-dashboard.png)
+
+---
+
+## User Management
+
+![](screenshots/user-management.png)
+
+---
+
+## Leave Types
+
+![](screenshots/leave-types.png)
+
+---
+
+## All Leave Requests
+
+![](screenshots/all-requests.png)
+
+---
+
+## Request Details
+
+![](screenshots/request-details.png)
+
+---
+
+## Reports
+
+### Leave Summary
+
+![](screenshots/reports-summary.png)
+
+### Leave Balances
+
+![](screenshots/reports-balances.png)
+
+### Leave Calendar
+
+![](screenshots/reports-calendar.png)
+
+---
+
+# API Features
+
+Authentication
+
+- POST /api/auth/login
+- GET /api/auth/me
+
+Users
+
+- CRUD Users
+
+Leave Types
+
+- CRUD Leave Types
+
+Leave Requests
+
+- Apply Leave
+- Approve Leave
+- Reject Leave
+- Leave History
+
+Reports
+
+- Summary
+- Calendar
+- Leave Balance
+- CSV Export
+
+---
+
+# Security
+
+- JWT Authentication
+- Password Hashing (bcrypt)
+- Role Based Authorization
+- Input Validation (Zod)
+- Protected API Routes
+- Prisma ORM
+
+---
+
+# Deployment
+
+Frontend
+
+Vercel
+
+Backend
+
+Render
+
+Database
+
+Neon PostgreSQL
+
+---
+
+# Future Improvements
+
+- Email Notifications
+- Multi-Level Approval
+- Public Holidays
+- Attendance Integration
+- Mobile Responsive Improvements
+- Docker Support
+- CI/CD Pipeline
+
+---
+
+# Author
+
+**Phaneendra Kanduri**
+
+LinkedIn
+
+https://www.linkedin.com/in/phaneendra-kanduri/
+
+GitHub
+
+https://github.com/Phaneendra2005
+
+---
+
+## License
+
+MIT License
