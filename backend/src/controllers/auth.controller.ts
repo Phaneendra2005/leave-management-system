@@ -16,21 +16,9 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   try {
     const { email, password } = loginSchema.parse(req.body);
 
-    const users = await prisma.user.findMany({
-      select: {
-        email: true,
-        isActive: true,
-      },
-    });
-
-    console.log("===== USERS IN DATABASE =====");
-    console.log(users);
-
     const user = await prisma.user.findUnique({
       where: { email },
     });
-
-    console.log("LOGIN USER:", user);
 
     if (!user || !user.isActive) {
       res.status(401).json({ success: false, message: 'Invalid credentials or inactive account' });
