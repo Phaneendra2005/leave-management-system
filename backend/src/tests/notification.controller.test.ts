@@ -11,16 +11,16 @@ jest.mock('../utils/notification.service', () => ({
 }));
 
 describe('Notification Controller', () => {
-  let mockRequest: Partial<Request>;
-  let mockResponse: Partial<Response>;
-  let nextFunction: NextFunction = jest.fn();
+  let mockRequest: Request;
+  let mockResponse: Response;
+  let nextFunction: NextFunction = jest.fn() as unknown as NextFunction;
 
   beforeEach(() => {
-    mockRequest = { user: { id: 'user1', role: 'EMPLOYEE' } };
+    mockRequest = { user: { id: 'user1', role: 'EMPLOYEE' }, params: {} } as unknown as Request;
     mockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
-    };
+    } as unknown as Response;
     jest.clearAllMocks();
   });
 
@@ -36,7 +36,7 @@ describe('Notification Controller', () => {
       };
       (notificationService.getUserNotifications as jest.Mock).mockReturnValue([mockNotification]);
 
-      await getNotifications(mockRequest as Request, mockResponse as Response, nextFunction);
+      await getNotifications(mockRequest, mockResponse, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: [mockNotification] });
@@ -48,7 +48,7 @@ describe('Notification Controller', () => {
       mockRequest.params = { id: 'notif1' };
       (notificationService.markAsRead as jest.Mock).mockReturnValue(null);
 
-      await markAsRead(mockRequest as Request, mockResponse as Response, nextFunction);
+      await markAsRead(mockRequest, mockResponse, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
       expect(mockResponse.json).toHaveBeenCalledWith({ success: false, message: 'Notification not found' });
@@ -66,7 +66,7 @@ describe('Notification Controller', () => {
       };
       (notificationService.markAsRead as jest.Mock).mockReturnValue(mockNotification);
 
-      await markAsRead(mockRequest as Request, mockResponse as Response, nextFunction);
+      await markAsRead(mockRequest, mockResponse, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: mockNotification });
@@ -75,7 +75,7 @@ describe('Notification Controller', () => {
 
   describe('markAllAsRead', () => {
     it('should mark all notifications as read', async () => {
-      await markAllAsRead(mockRequest as Request, mockResponse as Response, nextFunction);
+      await markAllAsRead(mockRequest, mockResponse, nextFunction);
 
       expect(notificationService.markAllAsRead).toHaveBeenCalledWith('user1');
       expect(mockResponse.status).toHaveBeenCalledWith(200);

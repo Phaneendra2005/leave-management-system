@@ -11,7 +11,7 @@ jest.mock('../utils/auditLogger');
 describe('Auth Controller', () => {
   let mockRequest: Request;
   let mockResponse: Response;
-  let nextFunction: NextFunction = jest.fn();
+  let nextFunction: NextFunction = jest.fn() as unknown as NextFunction;
 
   beforeEach(() => {
     mockRequest = {
@@ -94,7 +94,7 @@ describe('Auth Controller', () => {
 
   describe('logout', () => {
     it('should successfully logout', async () => {
-      mockRequest.user = { id: '1', role: 'EMPLOYEE' };
+      (mockRequest as any).user = { id: '1', role: 'EMPLOYEE' };
       
       await logout(mockRequest, mockResponse, nextFunction);
 
@@ -105,7 +105,7 @@ describe('Auth Controller', () => {
 
   describe('getMe', () => {
     it('should return current user', async () => {
-      mockRequest.user = { id: '1', role: 'EMPLOYEE' };
+      (mockRequest as any).user = { id: '1', role: 'EMPLOYEE' };
       const userMock = {
         id: '1',
         email: 'test@test.com',
